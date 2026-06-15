@@ -1,0 +1,698 @@
+:root {
+    --asmtp-primary: #0f766e;
+    --asmtp-primary-dark: #115e59;
+    --asmtp-accent: #0284c7;
+    --asmtp-accent-soft: #e0f2fe;
+    --asmtp-border: #d8e2ea;
+    --asmtp-border-strong: #b8c7d5;
+    --asmtp-text: #111827;
+    --asmtp-muted: #64748b;
+    --asmtp-surface: #f8fafc;
+    --asmtp-danger: #dc2626;
+}
+
+.asmtp-mailer-admin-wrap {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(15, 23, 42, 0.08);
+    margin: 10px 0 10px 0;
+    max-width: 100%;
+    overflow: hidden;
+}
+
+.asmtp-mailer-admin-header {
+    align-items: center;
+    animation: asmtpMailerGradientShift 8s ease infinite;
+    background: linear-gradient(135deg, #0f766e 0%, #0e7490 30%, #0284c7 62%, #22c55e 100%);
+    background-size: 300% 300%;
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    overflow: hidden;
+    padding: 32px 40px;
+    position: relative;
+}
+
+.asmtp-mailer-admin-header::before {
+    animation: asmtpMailerShimmer 3s infinite;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.22), transparent);
+    content: "";
+    height: 100%;
+    left: -100%;
+    position: absolute;
+    top: 0;
+    width: 100%;
+}
+
+.asmtp-mailer-admin-header::after {
+    animation: asmtpMailerBorderPulse 2s ease infinite;
+    background: linear-gradient(90deg, #ccfbf1, transparent, #bae6fd);
+    bottom: 0;
+    content: "";
+    height: 3px;
+    left: 0;
+    position: absolute;
+    right: 0;
+}
+
+.asmtp-mailer-header-brand,
+.asmtp-mailer-header-actions {
+    align-items: center;
+    display: flex;
+    gap: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.asmtp-mailer-header-brand {
+    isolation: isolate;
+}
+
+.asmtp-mailer-header-brand::before {
+    bottom: -58px;
+    color: rgba(255, 255, 255, 0.16);
+    content: "a";
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 210px;
+    font-weight: 700;
+    left: -54px;
+    line-height: 1;
+    pointer-events: none;
+    position: absolute;
+    text-transform: lowercase;
+    z-index: 0;
+}
+
+.asmtp-mailer-header-brand > * {
+    position: relative;
+    z-index: 1;
+}
+
+.asmtp-mailer-header-icon {
+    align-items: center;
+    background: rgba(255, 255, 255, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 12px;
+    display: inline-flex;
+    font-size: 30px;
+    height: 54px;
+    justify-content: center;
+    line-height: 54px;
+    width: 54px;
+}
+
+.asmtp-mailer-header-title {
+    animation: asmtpMailerTitleGlow 2s ease-in-out infinite;
+    color: #fff;
+    display: inline-block;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 4px;
+    position: relative;
+}
+
+.asmtp-mailer-header-tagline {
+    color: rgba(255, 255, 255, 0.92);
+    font-size: 14px;
+    margin: 0;
+}
+
+.asmtp-mailer-version {
+    animation: asmtpMailerPulse 2s ease infinite;
+    background: rgba(255, 255, 255, 0.25);
+    border-radius: 20px;
+    color: #fff;
+    font-family: monospace;
+    font-size: 12px;
+    padding: 4px 12px;
+    white-space: nowrap;
+}
+
+.asmtp-mailer-admin-tabs {
+    background: #f9fafb;
+    border-bottom: 1px solid var(--asmtp-border);
+    display: flex;
+    gap: 6px;
+    padding: 10px 32px 0;
+}
+
+.asmtp-mailer-tab {
+    border: 1px solid transparent;
+    border-bottom: 0;
+    border-radius: 8px 8px 0 0;
+    color: #475569;
+    font-weight: 600;
+    margin-bottom: -1px;
+    padding: 13px 20px;
+    position: relative;
+    text-decoration: none;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.asmtp-mailer-tab:hover {
+    background: #eef6f8;
+    color: var(--asmtp-primary-dark);
+}
+
+.asmtp-mailer-tab.active {
+    background: #fff;
+    border-color: var(--asmtp-border);
+    color: var(--asmtp-primary);
+}
+
+.asmtp-mailer-tab.active::after {
+    background: var(--asmtp-primary);
+    border-radius: 999px;
+    bottom: 6px;
+    content: "";
+    height: 3px;
+    left: 18px;
+    position: absolute;
+    right: 18px;
+}
+
+.asmtp-mailer-admin-content {
+    padding: 32px;
+}
+
+.asmtp-mailer-toast-region {
+    display: grid;
+    gap: 10px;
+    position: fixed;
+    right: 24px;
+    top: 44px;
+    width: min(360px, calc(100vw - 48px));
+    z-index: 100100;
+}
+
+.asmtp-mailer-toast {
+    background: #fff;
+    border-left: 4px solid var(--asmtp-primary);
+    border-radius: 8px;
+    box-shadow: 0 14px 30px rgba(15, 23, 42, 0.16);
+    color: #1f2937;
+    font-weight: 600;
+    opacity: 0;
+    padding: 12px 14px;
+    transform: translateY(-8px);
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.asmtp-mailer-toast.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.asmtp-mailer-toast-error {
+    border-left-color: var(--asmtp-danger);
+}
+
+.asmtp-mailer-settings-section {
+    border: 1px solid var(--asmtp-border);
+    border-radius: 10px;
+    margin-bottom: 24px;
+    padding: 22px 24px 8px;
+}
+
+.asmtp-mailer-settings-section h2,
+.asmtp-mailer-logs-header h2,
+.asmtp-mailer-analysis h3 {
+    color: var(--asmtp-text);
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 8px;
+}
+
+.asmtp-mailer-section-intro,
+.asmtp-mailer-static-note {
+    color: var(--asmtp-muted);
+    font-size: 13px;
+    line-height: 1.55;
+    margin: 0 0 16px;
+}
+
+.asmtp-mailer-admin-wrap .form-table {
+    border-collapse: collapse;
+    margin-top: 0;
+    width: 100%;
+}
+
+.asmtp-mailer-admin-wrap .form-table th,
+.asmtp-mailer-admin-wrap .form-table td {
+    border-bottom: 1px solid #edf2f7;
+    padding: 16px 0;
+}
+
+.asmtp-mailer-admin-wrap .form-table tr:last-child th,
+.asmtp-mailer-admin-wrap .form-table tr:last-child td {
+    border-bottom: 0;
+}
+
+.asmtp-mailer-admin-wrap .form-table th {
+    color: #1f2937;
+    font-weight: 600;
+    padding-right: 24px;
+}
+
+.asmtp-mailer-admin-wrap input.regular-text,
+.asmtp-mailer-admin-wrap input[type="number"],
+.asmtp-mailer-admin-wrap select,
+.asmtp-mailer-admin-wrap textarea {
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    box-shadow: none;
+    max-width: 520px;
+    min-height: 38px;
+    padding: 8px 12px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.asmtp-mailer-admin-wrap textarea {
+    min-height: 170px;
+    width: 100%;
+}
+
+.asmtp-mailer-admin-wrap select {
+    line-height: 20px;
+    padding-right: 32px;
+}
+
+.asmtp-mailer-admin-wrap input:focus,
+.asmtp-mailer-admin-wrap select:focus,
+.asmtp-mailer-admin-wrap textarea:focus {
+    border-color: var(--asmtp-primary);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
+    outline: none;
+}
+
+.asmtp-mailer-admin-wrap .description {
+    color: var(--asmtp-muted);
+    font-size: 12px;
+    margin-top: 6px;
+    max-width: 760px;
+}
+
+.asmtp-mailer-inline-control {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.asmtp-mailer-toggle {
+    align-items: center;
+    color: #334155;
+    display: flex;
+    font-weight: 500;
+    gap: 10px;
+    margin: 0 0 12px;
+}
+
+.asmtp-mailer-toggle input {
+    height: 1px;
+    opacity: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.asmtp-mailer-toggle span {
+    background: #cbd5e1;
+    border-radius: 999px;
+    display: inline-block;
+    height: 24px;
+    position: relative;
+    transition: background 0.2s ease;
+    width: 44px;
+}
+
+.asmtp-mailer-toggle span::before {
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.25);
+    content: "";
+    height: 18px;
+    left: 3px;
+    position: absolute;
+    top: 3px;
+    transition: transform 0.2s ease;
+    width: 18px;
+}
+
+.asmtp-mailer-toggle input:checked + span {
+    background: var(--asmtp-primary);
+}
+
+.asmtp-mailer-toggle input:checked + span::before {
+    transform: translateX(20px);
+}
+
+.asmtp-mailer-toggle input:focus-visible + span {
+    outline: 2px solid var(--asmtp-accent);
+    outline-offset: 2px;
+}
+
+.asmtp-mailer-admin-button,
+.asmtp-mailer-admin-wrap .button,
+.asmtp-mailer-admin-wrap .button-primary {
+    align-items: center;
+    border-radius: 6px;
+    display: inline-flex;
+    font-weight: 600;
+    justify-content: center;
+    min-height: 34px;
+    padding: 6px 14px;
+}
+
+.asmtp-mailer-admin-button-primary,
+.asmtp-mailer-admin-wrap .button-primary {
+    background: var(--asmtp-primary);
+    border-color: var(--asmtp-primary);
+    color: #fff;
+}
+
+.asmtp-mailer-admin-button-secondary {
+    background: #fff;
+    border-color: var(--asmtp-border-strong);
+    color: #334155;
+}
+
+.asmtp-mailer-admin-button-secondary:hover,
+.asmtp-mailer-admin-button-secondary:focus {
+    background: var(--asmtp-accent-soft);
+    border-color: var(--asmtp-accent);
+    color: #075985;
+}
+
+.asmtp-mailer-admin-button-primary:hover,
+.asmtp-mailer-admin-button-primary:focus,
+.asmtp-mailer-admin-wrap .button-primary:hover,
+.asmtp-mailer-admin-wrap .button-primary:focus {
+    background: var(--asmtp-primary-dark);
+    border-color: var(--asmtp-primary-dark);
+    color: #fff;
+}
+
+.asmtp-mailer-admin-button-danger-ghost,
+.asmtp-mailer-reset-form .button {
+    background: transparent;
+    border-color: transparent;
+    color: var(--asmtp-danger);
+}
+
+.asmtp-mailer-admin-button-danger-ghost:hover,
+.asmtp-mailer-admin-button-danger-ghost:focus,
+.asmtp-mailer-reset-form .button:hover,
+.asmtp-mailer-reset-form .button:focus {
+    background: #fef2f2;
+    color: #b91c1c;
+}
+
+.asmtp-mailer-form-actions {
+    align-items: center;
+    border-top: 1px solid var(--asmtp-border);
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 24px;
+}
+
+.asmtp-mailer-admin-wrap p.submit {
+    border-top: 1px solid var(--asmtp-border);
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 24px;
+    padding-top: 24px;
+}
+
+.asmtp-mailer-form-actions .asmtp-mailer-reset-form {
+    margin: 0;
+}
+
+.asmtp-mailer-analysis {
+    background: var(--asmtp-surface);
+    border: 1px solid var(--asmtp-border);
+    border-radius: 12px;
+    margin: 24px 0;
+    padding: 20px;
+}
+
+.asmtp-mailer-analysis-summary {
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(4, minmax(130px, 1fr));
+    margin-bottom: 22px;
+}
+
+.asmtp-mailer-analysis-summary div,
+.asmtp-mailer-check {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    color: #374151;
+    padding: 12px;
+}
+
+.asmtp-mailer-analysis-summary strong {
+    color: var(--asmtp-text);
+    display: block;
+    font-size: 12px;
+    margin-bottom: 6px;
+}
+
+.asmtp-mailer-analysis-error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 8px;
+    color: #991b1b;
+    margin-bottom: 20px;
+    padding: 12px;
+}
+
+.asmtp-mailer-check-grid {
+    display: grid;
+    gap: 10px;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    margin-bottom: 22px;
+}
+
+.asmtp-mailer-check {
+    align-items: center;
+    display: flex;
+    gap: 8px;
+}
+
+.asmtp-mailer-check.is-passed .dashicons {
+    color: #059669;
+}
+
+.asmtp-mailer-check.is-failed .dashicons {
+    color: var(--asmtp-danger);
+}
+
+.asmtp-mailer-debug-output {
+    background: #0f172a;
+    border-radius: 8px;
+    color: #e5e7eb;
+    max-height: 360px;
+    overflow: auto;
+    padding: 16px;
+    white-space: pre-wrap;
+}
+
+.asmtp-mailer-logs-header {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.asmtp-mailer-logs-actions {
+    align-items: center;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.asmtp-mailer-inline-form {
+    display: inline-block;
+}
+
+.asmtp-mailer-segmented-control {
+    background: #eef6f8;
+    border: 1px solid var(--asmtp-border);
+    border-radius: 8px;
+    display: inline-flex;
+    padding: 3px;
+}
+
+.asmtp-mailer-segmented-control a {
+    border-radius: 6px;
+    color: #475569;
+    font-weight: 600;
+    padding: 6px 10px;
+    text-decoration: none;
+}
+
+.asmtp-mailer-segmented-control a.active {
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.12);
+    color: var(--asmtp-primary);
+}
+
+.asmtp-mailer-logs-table-wrap {
+    overflow-x: auto;
+}
+
+.asmtp-mailer-logs-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+.asmtp-mailer-logs-table th {
+    background: #f9fafb;
+    border-bottom: 1px solid var(--asmtp-border);
+    color: #374151;
+    font-size: 13px;
+    font-weight: 700;
+    padding: 12px 16px;
+    text-align: left;
+}
+
+.asmtp-mailer-logs-table td {
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151;
+    font-size: 14px;
+    padding: 12px 16px;
+    vertical-align: top;
+}
+
+.asmtp-mailer-log-excerpt {
+    color: var(--asmtp-muted);
+    font-size: 12px;
+    margin-top: 6px;
+}
+
+.asmtp-mailer-status-badge {
+    border-radius: 12px;
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 10px;
+}
+
+.asmtp-mailer-status-success {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.asmtp-mailer-status-error {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.asmtp-mailer-empty-state {
+    padding: 54px 20px;
+    text-align: center;
+}
+
+.asmtp-mailer-empty-state .dashicons {
+    color: #d1d5db;
+    font-size: 48px;
+    height: 48px;
+    width: 48px;
+}
+
+.asmtp-mailer-empty-state h3 {
+    color: #374151;
+    margin: 16px 0 8px;
+}
+
+.asmtp-mailer-empty-state p {
+    color: #6b7280;
+    margin: 0 auto;
+    max-width: 520px;
+}
+
+@keyframes asmtpMailerGradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+@keyframes asmtpMailerShimmer {
+    0% {
+        left: -100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+@keyframes asmtpMailerBorderPulse {
+    0% {
+        opacity: 0.3;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0.3;
+    }
+}
+
+@keyframes asmtpMailerTitleGlow {
+    0%,
+    100% {
+        text-shadow: 0 0 0 rgba(255, 255, 255, 0);
+    }
+    50% {
+        text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+    }
+}
+
+@keyframes asmtpMailerPulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.4);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(255, 255, 255, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+    }
+}
+
+@media (max-width: 900px) {
+    .asmtp-mailer-admin-header,
+    .asmtp-mailer-logs-header {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    .asmtp-mailer-admin-tabs {
+        overflow-x: auto;
+        padding: 10px 20px 0;
+    }
+
+    .asmtp-mailer-tab {
+        flex: 0 0 auto;
+        padding: 13px 16px;
+    }
+
+    .asmtp-mailer-admin-content {
+        padding: 24px 20px;
+    }
+
+    .asmtp-mailer-analysis-summary {
+        grid-template-columns: 1fr;
+    }
+}

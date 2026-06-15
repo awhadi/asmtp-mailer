@@ -1,0 +1,25 @@
+Version: 1.4.2
+Date: 2026-06-02
+Author: Awhadi
+
+Summary:
+Cleaned unused plugin code, simplified the header icon structure, renamed the Email Log interface to Logs, added a setting to enable or disable log writing, and removed the Reset Test Form button from the Test Email screen.
+
+Files changed:
+- asmtp-mailer.php
+- assets/css/admin-settings-interface.css
+- assets/js/admin-settings-controls.js
+- readme.txt
+- CHANGELOG.md
+- review.txt
+
+Security/UX notes:
+- Logs now respect an explicit Enable Logs setting before writing to WordPress options.
+- Existing SMTP delivery hooks remain active so mail routing continues to work when logs are disabled.
+- The header icon remains visible without the extra logo wrapper markup.
+- The Test Email form keeps the send action focused by removing the reset button.
+- Unused legacy admin notice helpers and empty include hooks were removed.
+- No inline styles or scripts were added.
+
+Rollback plan:
+Revert the 1.4.2 changes in `asmtp-mailer.php`, `assets/css/admin-settings-interface.css`, `assets/js/admin-settings-controls.js`, `readme.txt`, `CHANGELOG.md`, and `review.txt`.
