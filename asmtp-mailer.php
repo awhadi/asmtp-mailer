@@ -1,7 +1,7 @@
 <?php
 /*
 Plugin Name: aSMTP mailer
-Version: 1.4.2
+Version: 1.4.3
 Requires at least: 7.0
 Requires PHP: 7.4
 Author: Awhadi
@@ -16,7 +16,7 @@ if (!defined('ABSPATH')){
 
 class ASMTP_MAILER {
     
-    var $plugin_version = '1.4.2';
+    var $plugin_version = '1.4.3';
     var $plugin_url;
     var $plugin_path;
     
