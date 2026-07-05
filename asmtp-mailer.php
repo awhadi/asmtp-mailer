@@ -1,6 +1,7 @@
 <?php
 /*
 Plugin Name: aSMTP mailer
+* Plugin URI: https://plugins.awhadi.online/asmtp-mailer
 Version: 1.4.3
 Requires at least: 7.0
 Requires PHP: 7.4
