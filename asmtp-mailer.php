@@ -22,10 +22,7 @@ class ASMTP_MAILER {
     
     function __construct() {
         define('ASMTP_MAILER_VERSION', $this->plugin_version);
-        define('ASMTP_MAILER_SITE_URL', site_url());
-        define('ASMTP_MAILER_HOME_URL', home_url());
         define('ASMTP_MAILER_URL', $this->plugin_url());
-        define('ASMTP_MAILER_PATH', $this->plugin_path());
         $this->loader_operations();
     }
 
@@ -104,11 +101,8 @@ class ASMTP_MAILER {
         echo '<div class="asmtp-mailer-toast-region" aria-live="polite" aria-atomic="true"></div>';
         echo '<div class="asmtp-mailer-admin-header">';
         echo '<div class="asmtp-mailer-header-brand">';
-        echo '<span class="dashicons dashicons-email-alt asmtp-mailer-header-icon" aria-hidden="true"></span>';
-        echo '<div>';
-        echo '<h1 class="asmtp-mailer-header-title">' . esc_html__('aSMTP mailer', 'asmtp-mailer') . '</h1>';
+        echo '<h1 class="asmtp-mailer-header-title">' . esc_html__('SMTP Mailer', 'asmtp-mailer') . '</h1>';
         echo '<p class="asmtp-mailer-header-tagline">' . esc_html__('Secure SMTP delivery, reply routing, testing, and logs in one focused panel.', 'asmtp-mailer') . '</p>';
-        echo '</div>';
         echo '</div>';
         echo '<div class="asmtp-mailer-header-actions"><span class="asmtp-mailer-version">' . esc_html__('Version', 'asmtp-mailer') . ' ' . esc_html(ASMTP_MAILER_VERSION) . '</span></div>';
         echo '</div>';
@@ -170,7 +164,11 @@ class ASMTP_MAILER {
         $options = asmtp_mailer_normalize_options(asmtp_mailer_get_option());
         $default_subject = sprintf(__('aSMTP mailer test from %s', 'asmtp-mailer'), wp_parse_url(home_url(), PHP_URL_HOST));
         $default_message = sprintf(
-            __("This is a diagnostic test email from aSMTP mailer.\n\nFor best delivery, confirm these requirements before testing:\n- SMTP Host, TLS encryption, and port 587 are configured.\n- SMTP Authentication is enabled when your provider requires credentials.\n- From Email uses an address approved by your SMTP provider.\n- Reply-To is configured only when replies should go somewhere different from From Email.\n- Logs are enabled when developers need records of WordPress wp_mail() send attempts; message body logging stays off unless your team explicitly needs it.\n\nSite: %s\nWordPress mail function: wp_mail()", 'asmtp-mailer'),
+            __("This is a diagnostic test email from aSMTP mailer.
+
+For best delivery, confirm these requirements before testing:\n- SMTP Host, TLS encryption, and port 587 are configured.\n- SMTP Authentication is enabled when your provider requires credentials.\n- From Email uses an address approved by your SMTP provider.\n- Reply-To is configured only when replies should go somewhere different from From Email.\n- Logs are enabled when developers need records of WordPress wp_mail() send attempts; message body logging stays off unless your team explicitly needs it.
+
+Site: %s\nWordPress mail function: wp_mail()", 'asmtp-mailer'),
             home_url()
         );
         if(isset($_POST['asmtp_mailer_send_test_email'])){
@@ -194,9 +192,7 @@ class ASMTP_MAILER {
                 $message = sanitize_textarea_field(wp_unslash($_POST['asmtp_mailer_email_body']));
             }
             if (!is_email($to)) {
-                echo '<div id="message" class="notice notice-error"><p><strong>';
-                echo esc_html__('Please enter a valid recipient email address.', 'asmtp-mailer');
-                echo '</strong></p></div>';
+                asmtp_mailer_render_notice(__('Please enter a valid recipient email address.', 'asmtp-mailer'), 'error');
             } else {
                 $GLOBALS['asmtp_mailer_test_context'] = array(
                     'active' => true,
@@ -206,14 +202,20 @@ class ASMTP_MAILER {
                 );
                 $sent = wp_mail($to, $subject, $message);
                 $elapsed = microtime(true) - $GLOBALS['asmtp_mailer_test_context']['started_at'];
-                $notice_class = $sent ? 'notice notice-success' : 'notice notice-error';
                 $notice_text = $sent ? __('Test email sent. Please verify delivery in the destination inbox.', 'asmtp-mailer') : __('The test email could not be sent. Review the analysis below.', 'asmtp-mailer');
-                echo '<div id="message" class="' . esc_attr($notice_class) . '"><p><strong>' . esc_html($notice_text) . '</strong></p></div>';
+                asmtp_mailer_render_notice($notice_text, $sent ? 'success' : 'error');
                 asmtp_mailer_render_test_analysis(asmtp_mailer_build_test_analysis($sent, $elapsed, $to, $subject));
                 unset($GLOBALS['asmtp_mailer_test_context']);
             }
         }
         ?>
+        <?php if (empty($options['smtp_host'])) : ?>
+            <div class="asmtp-mailer-empty-state">
+                <span class="dashicons dashicons-warning"></span>
+                <h3><?php esc_html_e('SMTP not configured', 'asmtp-mailer'); ?></h3>
+                <p><?php esc_html_e('Configure your SMTP host, port, and credentials on the SMTP tab before sending a test email. Use the Test Connection button to verify your settings first.', 'asmtp-mailer'); ?></p>
+            </div>
+        <?php else : ?>
         <form method="post" action="">
             <?php wp_nonce_field('asmtp_mailer_test_email'); ?>
 
@@ -244,6 +246,7 @@ class ASMTP_MAILER {
                 <input type="submit" name="asmtp_mailer_send_test_email" id="asmtp_mailer_send_test_email" class="button button-primary" value="<?php esc_attr_e('Send Test Email', 'asmtp-mailer');?>">
             </div>
         </form>
+        <?php endif; ?>
         
         <?php
     }   
@@ -255,7 +258,7 @@ class ASMTP_MAILER {
             }
             if (check_admin_referer('asmtp_mailer_reset_sender_settings', 'asmtp_mailer_reset_sender_settings_nonce')) {
                 asmtp_mailer_update_option(asmtp_mailer_get_default_options_for_group('sender'));
-                echo '<div id="message" class="notice notice-success"><p><strong>' . esc_html__('Sender, Reply-To, logging, and formatting settings reset.', 'asmtp-mailer') . '</strong></p></div>';
+                asmtp_mailer_render_notice(__('Sender, Reply-To, logging, and formatting settings reset.', 'asmtp-mailer'));
             }
         }
 
@@ -270,9 +273,9 @@ class ASMTP_MAILER {
             $from_email = isset($_POST['from_email']) ? sanitize_email(wp_unslash($_POST['from_email'])) : '';
             $reply_to_email = isset($_POST['reply_to_email']) ? sanitize_email(wp_unslash($_POST['reply_to_email'])) : '';
             if (!empty($from_email) && !is_email($from_email)) {
-                echo '<div id="message" class="notice notice-error"><p><strong>' . esc_html__('Please enter a valid From email address.', 'asmtp-mailer') . '</strong></p></div>';
+                asmtp_mailer_render_notice(__('Please enter a valid From email address.', 'asmtp-mailer'), 'error');
             } elseif (!empty($reply_to_email) && !is_email($reply_to_email)) {
-                echo '<div id="message" class="notice notice-error"><p><strong>' . esc_html__('Please enter a valid Reply-To email address.', 'asmtp-mailer') . '</strong></p></div>';
+                asmtp_mailer_render_notice(__('Please enter a valid Reply-To email address.', 'asmtp-mailer'), 'error');
             } else {
                 $options = array(
                     'from_email' => $from_email,
@@ -289,7 +292,7 @@ class ASMTP_MAILER {
                     'email_log_retention' => isset($_POST['email_log_retention']) ? asmtp_mailer_sanitize_log_retention(wp_unslash($_POST['email_log_retention'])) : 100,
                 );
                 asmtp_mailer_update_option($options);
-                echo '<div id="message" class="notice notice-success"><p><strong>' . esc_html__('Sender settings saved.', 'asmtp-mailer') . '</strong></p></div>';
+                asmtp_mailer_render_notice(__('Sender settings saved.', 'asmtp-mailer'));
             }
         }
 
@@ -364,17 +367,15 @@ class ASMTP_MAILER {
                         <tr valign="top">
                             <th scope="row"><label for="enable_email_logging"><?php esc_html_e('Enable Logs', 'asmtp-mailer');?></label></th>
                             <td>
-                                <label class="asmtp-mailer-toggle"><input name="enable_email_logging" type="checkbox" id="enable_email_logging" <?php checked($options['enable_email_logging'], 1); ?> value="1"><span></span><?php esc_html_e('Write delivery records for WordPress email send attempts.', 'asmtp-mailer');?></label>
-                                <p class="description"><?php esc_html_e('Disable this when you do not want the plugin to store email send history.', 'asmtp-mailer'); ?></p>
+                                <label class="asmtp-mailer-toggle"><input name="enable_email_logging" type="checkbox" id="enable_email_logging" <?php checked($options['enable_email_logging'], 1); ?> value="1"><span></span><?php esc_html_e('Record every WordPress email sent through wp_mail() in the database.', 'asmtp-mailer');?></label>
+                                <p class="description"><?php esc_html_e('Logs are stored in the WordPress database and visible on the Logs tab.', 'asmtp-mailer'); ?></p>
                             </td>
                         </tr>
-                        <tr valign="top">
-                            <th scope="row"><?php esc_html_e('Capture Scope', 'asmtp-mailer');?></th>
-                            <td><p class="asmtp-mailer-static-note"><?php esc_html_e('When enabled, logs capture every WordPress email sent through wp_mail(), including emails triggered by frontend actions.', 'asmtp-mailer');?></p></td>
-                        </tr>
+
                         <tr valign="top">
                             <th scope="row"><label for="log_email_body"><?php esc_html_e('Log Message Body', 'asmtp-mailer');?></label></th>
-                            <td><label class="asmtp-mailer-toggle"><input name="log_email_body" type="checkbox" id="log_email_body" <?php checked($options['log_email_body'], 1); ?> value="1"><span></span><?php esc_html_e('Store email body excerpts in logs. Leave off for better privacy.', 'asmtp-mailer');?></label></td>
+                            <td><label class="asmtp-mailer-toggle"><input name="log_email_body" type="checkbox" id="log_email_body" <?php checked($options['log_email_body'], 1); ?> value="1"><span></span><?php esc_html_e('Save a 30-word excerpt of the email body alongside each log entry.', 'asmtp-mailer');?></label>
+                                <p class="description"><?php esc_html_e('The excerpt is stored in the same WordPress database option as the log record. Leave off for better privacy.', 'asmtp-mailer'); ?></p></td>
                         </tr>
                         <tr valign="top">
                             <th scope="row"><label for="email_log_retention"><?php esc_html_e('Log Retention', 'asmtp-mailer');?></label></th>
@@ -416,8 +417,7 @@ class ASMTP_MAILER {
             unset($save_options['smtp_password_plain']);
             asmtp_mailer_update_option($save_options);
             $connection_test_result = asmtp_mailer_test_smtp_connection($test_options);
-            $notice_class = $connection_test_result['success'] ? 'notice notice-success' : 'notice notice-error';
-            echo '<div id="message" class="' . esc_attr($notice_class) . ' asmtp-mailer-admin-notice"><p><strong>' . esc_html($connection_test_result['message']) . '</strong></p></div>';
+            asmtp_mailer_render_notice($connection_test_result['message'], $connection_test_result['success'] ? 'success' : 'error');
         }
 
         if (isset($_POST['asmtp_mailer_update_settings'])) {
@@ -431,9 +431,7 @@ class ASMTP_MAILER {
             $options = asmtp_mailer_get_smtp_options_from_post();
             unset($options['smtp_password_plain']);
             asmtp_mailer_update_option($options);
-            echo '<div id="message" class="notice notice-success asmtp-mailer-admin-notice"><p><strong>';
-            echo esc_html__('SMTP settings saved.', 'asmtp-mailer');
-            echo '</strong></p></div>';
+            asmtp_mailer_render_notice(__('SMTP settings saved.', 'asmtp-mailer'));
         }
 
         if (isset($_POST['asmtp_mailer_reset_smtp_settings'])) {
@@ -442,9 +440,7 @@ class ASMTP_MAILER {
             }
             if(check_admin_referer('asmtp_mailer_reset_smtp_settings', 'asmtp_mailer_reset_smtp_settings_nonce')) {
                 asmtp_mailer_update_option(asmtp_mailer_get_default_options_for_group('smtp'));
-                echo '<div id="message" class="notice notice-success asmtp-mailer-admin-notice"><p><strong>';
-                echo esc_html__('SMTP settings reset.', 'asmtp-mailer');
-                echo '</strong></p></div>';
+                asmtp_mailer_render_notice(__('SMTP settings reset.', 'asmtp-mailer'));
             }
         }
         
@@ -546,7 +542,7 @@ class ASMTP_MAILER {
                 }
                 if (check_admin_referer('asmtp_mailer_clear_email_log', 'asmtp_mailer_clear_email_log_nonce')) {
                     delete_option('asmtp_mailer_email_logs');
-                    echo '<div id="message" class="notice notice-success"><p><strong>' . esc_html__('Logs reset.', 'asmtp-mailer') . '</strong></p></div>';
+                    asmtp_mailer_render_notice(__('Logs reset.', 'asmtp-mailer'));
                 }
             }
             $options = asmtp_mailer_normalize_options(asmtp_mailer_get_option());
@@ -588,6 +584,8 @@ class ASMTP_MAILER {
                     <p><?php esc_html_e('Send a test email or wait for the next WordPress email event to start collecting delivery records.', 'asmtp-mailer'); ?></p>
                 </div>
             <?php elseif (!empty($logs)) : ?>
+                <div class="asmtp-mailer-status-legend"><span class="asmtp-mailer-status-badge asmtp-mailer-status-success">&bull;</span> <?php esc_html_e('Sent — SMTP server accepted the message for delivery. This does not guarantee inbox delivery.', 'asmtp-mailer'); ?><br><span class="asmtp-mailer-status-badge asmtp-mailer-status-error">&bull;</span> <?php esc_html_e('Failed — The send attempt did not complete. Check the Details column for the specific error.', 'asmtp-mailer'); ?></div>
+
                 <div class="asmtp-mailer-logs-table-wrap">
                     <table class="asmtp-mailer-logs-table">
                         <thead>
@@ -624,6 +622,11 @@ class ASMTP_MAILER {
             <?php endif; ?>
             <?php
         }
+}
+
+function asmtp_mailer_render_notice($message, $type = 'success') {
+    $class = 'notice notice-' . ($type === 'error' ? 'error' : 'success');
+    echo '<div id="message" class="' . esc_attr($class) . '"><p><strong>' . esc_html($message) . '</strong></p></div>';
 }
 
 function asmtp_mailer_get_option(){
@@ -891,7 +894,7 @@ function asmtp_mailer_format_address_summary($addresses) {
 
 function asmtp_mailer_get_status_label($status) {
     if ($status === 'success') {
-        return __('Accepted', 'asmtp-mailer');
+        return __('Sent', 'asmtp-mailer');
     }
     if ($status === 'error') {
         return __('Failed', 'asmtp-mailer');
